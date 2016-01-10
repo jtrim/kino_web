@@ -1,47 +1,19 @@
-# Notifier Application
-Read kino-ssh-server/README.md first, then run:
+# KinoWebapp
 
-```sh
-docker-compose run notifier bash -c "bin/console"
-```
+To start your Phoenix app:
 
-# Web App
+  1. Install dependencies with `mix deps.get`
+  2. Create and migrate your database with `mix ecto.create && mix ecto.migrate`
+  3. Start Phoenix endpoint with `mix phoenix.server`
 
-``` sh
-$ cd kino_webapp
-$ mix deps.get
-$ mix ecto.create
-$ mix test
-$ npm install # for assets
-$ mix phoenix.server
-```
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-`docker-comopse` variant (from `kino-platform`):
+Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
 
-```sh
-$ docker-compose run webapp mix ecto.create
-$ docker-compose run webapp mix test
-$ docker-compose run webapp npm install # for assets
-$ docker-compose up webapp              # starts the server
-```
+## Learn more
 
-TODO:
-
-- [X] Write a small wrapper client around Bunny
-- [X] Add Statsd collection to the rabbitmq client
-- [X] Get an ssh server running in a docker container
-- [X] Wire everything up with docker-compose
-- [ ] Modify the rabbitmq client to wrap / unwrap message payloads in json for producing / consuming
-  - [X] Wrap in json
-  - [ ] Unwrap json
-    - Note: was thinking about assuming the payload is json, then handling
-      decoding errors by dropping a log message and returning the raw body
-- [ ] Write a file-system watcher that submits rabbitmq messages when files change
-  - Messages should include the username, created timestamp, operation, source / destination (in the case of moves) and the file contents (in the case of everything but deletion)
-  - Note: wrote a quick and dirty version of this to watch for files created
-    just to prove the concept. Need to go through `man inotify` and create
-    appropriate watchers for event types that make sense
-- [ ] Once the concept is proven, go write unit tests / refactor
-- [ ] Figure out directory permissions that make sense to prevent moving of the
-  user's own home directory and draft / published folders
-- [ ] Design a default shell application so users can run something like "ssh user@kino draft foo.txt"
+  * Official website: http://www.phoenixframework.org/
+  * Guides: http://phoenixframework.org/docs/overview
+  * Docs: http://hexdocs.pm/phoenix
+  * Mailing list: http://groups.google.com/group/phoenix-talk
+  * Source: https://github.com/phoenixframework/phoenix

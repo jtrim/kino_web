@@ -1,45 +1,27 @@
-notifier:
-  build: kino-notifier
-  volumes:
-    - ./kino-notifier:/app
-  links:
-    - stats:stats.local
-    - rabbitmq:rabbitmq.local
-    - ssh:ssh.local
-  volumes_from:
-    - ssh
+web:
+  build: .
+  command: 'bash -c ''mix phoenix.server'''
+  working_dir: /app/user
   environment:
-    - RABBITMQ_HOST=rabbitmq.local
-    - STATSD_HOST=stats.local
-ssh:
-  build: kino-ssh-server
-  ports: 
-    - "3500:22"
-  volumes:
-    - /home
-rabbitmq:
-  image: rabbitmq:3.5.7
+    PORT: 8080
+    DATABASE_URL: 'postgres://postgres:@herokuPostgresql:5432/postgres'
   ports:
-    - "5672"
-stats:
-  image: kamon/grafana_graphite:latest
-  ports:
-    - "8215/udp"
-    - "4002:80"
-    - "4003:81"
-postgres:
-  image: postgres:9.4.5
-  ports:
-    - "5432"
-webapp:
-  build: kino_webapp
-  ports:
-    - "4000:4000"
-    - "4001:4001"
+    - '8080:8080'
   links:
-    - postgres:postgres.local
-    - rabbitmq:rabbitmq.local
+    - herokuPostgresql
+shell:
+  build: .
+  command: bash
+  working_dir: /app/user
   environment:
-    - POSTGRES_HOST=postgres.local
+    PORT: 8080
+    DATABASE_URL: 'postgres://postgres:@herokuPostgresql:5432/postgres'
+  ports:
+    - '8080:8080'
+  links:
+    - herokuPostgresql
   volumes:
-    - ./kino_webapp:/app
+    - '.:/app/user'
+herokuPostgresql:
+  image: postgres
+

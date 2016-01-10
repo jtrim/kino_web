@@ -12,7 +12,7 @@ defmodule KinoWebapp.MessageConsumer do
   @exchange    ""
 
   def init(_opts) do
-    {:ok, conn} = Connection.open("amqp://guest:guest@rabbitmq.local:5672")
+    {:ok, conn} = Connection.open(System.get_env("AMQP_URL") || "amqp://guest:guest@localhost:5672")
     {:ok, chan} = Channel.open(conn)
     Basic.qos(chan, prefetch_count: 10)
     Queue.declare(chan, @queue, durable: true)
@@ -25,11 +25,11 @@ defmodule KinoWebapp.MessageConsumer do
     {:noreply, chan}
   end
 
-  def handle_info({:basic_cancel, %{consumer_tag: consuemr_tag}}, chan) do
+  def handle_info({:basic_cancel, %{consumer_tag: consumer_tag}}, chan) do
     {:stop, :normal, chan}
   end
 
-  def handle_info({:basic_cancel_ok, %{consumer_tag: consuemr_tag}}, chan) do
+  def handle_info({:basic_cancel_ok, %{consumer_tag: consumer_tag}}, chan) do
     {:noreply, chan}
   end
 
