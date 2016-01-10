@@ -1,7 +1,7 @@
 FROM jtrim/heroku-phoenix
 
-ARG MIX_ENV=prod
-ENV MIX_ENV $MIX_ENV
+ARG MIX_ENV
+ENV MIX_ENV ${MIX_ENV:-prod}
 
 ADD mix.exs /app/user/
 ADD mix.lock /app/user/
