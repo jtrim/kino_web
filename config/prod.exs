@@ -24,7 +24,7 @@ case System.get_env("DATABASE_URL") do
   nil ->
     config :kino_webapp, KinoWebapp.Repo,
       adapter: Ecto.Adapters.Postgres,
-      username: "postgers",
+      username: "postgres",
       password: "",
       database: "kino_web_prod",
       hostname: "localhost",

@@ -7,7 +7,7 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :kino_webapp, KinoWebapp.Endpoint,
-  http: [port: 4000],
+  http: [port: {:system, "PORT"}],
   debug_errors: true,
   code_reloader: true,
   cache_static_lookup: false,
@@ -33,10 +33,31 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
-config :kino_webapp, KinoWebapp.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: (System.get_env("POSTGRES_USER") || "postgres"),
-  password: (System.get_env("POSTGRES_PASSWORD") || ""),
-  database: (System.get_env("POSTGRES_DATABASE") || "kino_webapp_dev"),
-  hostname: (System.get_env("POSTGRES_HOST") || "localhost"),
-  pool_size: 10
+case System.get_env("DATABASE_URL") do
+  nil ->
+    config :kino_webapp, KinoWebapp.Repo,
+      adapter: Ecto.Adapters.Postgres,
+      username: "postgres",
+      password: "",
+      database: "kino_web_dev",
+      hostname: "localhost",
+      port:     "5432",
+      pool_size: 10
+  database_url ->
+    %URI{
+      host: hostname,
+      path: path,
+      port: port,
+      userinfo: userinfo
+    } = URI.parse(database_url)
+    "/" <> database = path
+    [username, password] = Regex.split(~r/:/, userinfo)
+    config :kino_webapp, KinoWebapp.Repo,
+      adapter: Ecto.Adapters.Postgres,
+      username: username,
+      password: password,
+      database: database,
+      hostname: hostname,
+      port:     port,
+      pool_size: 10
+end
